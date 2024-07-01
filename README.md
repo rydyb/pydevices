@@ -1,6 +1,6 @@
-# Devices
+# Pydevices
 
-[Network Device Support Packages (NDSPs)](https://m-labs.hk/artiq/manual/developing_a_ndsp.html) for [artiq](https://m-labs.hk/artiq/manual/index.html).
+Python device library which is compatible with [artiq](https://m-labs.hk/artiq/manual/index.html)'s [NDSP](https://m-labs.hk/artiq/manual/developing_a_ndsp.html) interface.
 
 Supported devices:
 
