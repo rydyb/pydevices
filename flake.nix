@@ -29,6 +29,7 @@
           python
           venvShellHook
           numpy
+          requests
           artiq.packages.${system}.artiq
           devices
         ];
