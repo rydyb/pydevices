@@ -1,4 +1,4 @@
-import requests
+import aiohttp
 
 
 class UnexpectedUnitError(ValueError):
@@ -22,49 +22,50 @@ class Wavemeter:
     def __init__(self, address: str):
         self._address = address
 
-    def version(self):
+    async def version(self):
         """
         Returns a version object.
         """
-        return self._request("/")
+        return await self._request("/")
 
-    def pressure(self):
+    async def pressure(self):
         """
         Returns the pressure in mbar measured inside the wavemeter.
         """
-        response = self._request("/pressure")
+        response = await self._request("/pressure")
         if response["Unit"] != "mbar":
             raise UnexpectedUnitError(response["Unit"], "mbar")
-        return response["Value"]
+        return float(response["Value"])
 
-    def temperature(self) -> float:
+    async def temperature(self) -> float:
         """
         Returns the temperature in °C measured inside the wavemeter.
         """
-        response = self._request("/temperature")
+        response = await self._request("/temperature")
         if response["Unit"] != "°C":
             raise UnexpectedUnitError(response["Unit"], "°C")
-        return response["Value"]
+        return float(response["Value"])
 
-    def frequency(self, channel: int) -> float:
+    async def frequency(self, channel: int) -> float:
         """
         Returns the frequency in THz of the specified channel.
         """
-        response = self._request(f"/frequency/{channel}")
+        response = await self._request(f"/frequency/{channel}")
         if response["Unit"] != "THz":
             raise UnexpectedUnitError(response["Unit"], "THz")
         return response["Value"]
 
-    def wavelength(self, channel: int) -> float:
+    async def wavelength(self, channel: int) -> float:
         """
         Returns the wavelength in nm of the specified channel.
         """
-        response = self._request(f"/wavelength/{channel}")
+        response = await self._request(f"/wavelength/{channel}")
         if response["Unit"] != "nm":
             raise UnexpectedUnitError(response["Unit"], "nm")
         return response["Value"]
 
-    def _request(self, path: str):
-        response = requests.get(f"http://{self._address}{path}")
-        response.raise_for_status()
-        return response.json()
+    async def _request(self, path: str):
+        async with aiohttp.ClientSession() as session:
+            async with session.get(f"http://{self._address}{path}") as response:
+                response.raise_for_status()
+                return await response.json()
