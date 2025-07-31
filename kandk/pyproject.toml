@@ -2,8 +2,12 @@
 name = "kandk"
 version = "21.1.0"
 authors = [
-    { name = "Bodo Kaiser", email = "bodo.kaiser@physik.uni-muenchen.de" }
+    { name = "Bodo Kaiser", email = "bodo.kaiser@physik.uni-muenchen.de" },
 ]
-dependencies = [
-    "sipyco @ git+https://github.com/m-labs/sipyco.git@v1.9"
-]
+dependencies = ["sipyco @ git+https://github.com/m-labs/sipyco.git@v1.9"]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+libkk = ["kandk/*.dll", "kandk/*.so"]
