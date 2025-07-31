@@ -38,7 +38,7 @@ def main():
     try:
         fc = FrequencyCounter(
             connection=args.host,
-         channels=args.channels
+            channels=args.channels
         )
 
         if args.command == "stream":

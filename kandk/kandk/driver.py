@@ -31,7 +31,7 @@ class FrequencyCounter:
                 return report._floats
             time.sleep(self.interval)
 
-        return None
+        raise TimeoutError("timeout while waiting for report")
 
     def close(self):
         self.lib.close_connection(self.source_id)
