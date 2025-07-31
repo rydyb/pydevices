@@ -5,7 +5,7 @@ Support for K+K FXE device included in some Menlo frequency combs.
 ## Installation
 
 ```shell
-pip install git+https://github.com/rydyb/pydevices.git@<tag>#subdirectory=<device>
+pip install git+https://github.com/rydyb/pydevices.git@main#subdirectory=kandk
 ```
 
 ## Usage
