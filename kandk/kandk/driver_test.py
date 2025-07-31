@@ -12,8 +12,8 @@ class TestFrequencyCounter(unittest.TestCase):
         except Exception:
             pass
 
-    def test_initialization(self):
-        pass
+    def test_open(self):
+        self.fc.open()
 
     def test_report(self):
         for i in range(10):

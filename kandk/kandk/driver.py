@@ -10,9 +10,10 @@ class FrequencyCounter:
         self.channels = channels
         self.timeout = timeout
         self.interval = interval
+
+    def open(self):
         self.lib = NativeLib()
         self.source_id = self.lib.get_source_id()
-
 
         result = self.lib.open_connection(self.source_id, self.connection, False)
         if result.result_code != ErrorCode.KK_NO_ERR:
@@ -34,4 +35,5 @@ class FrequencyCounter:
         raise TimeoutError("timeout while waiting for report")
 
     def close(self):
-        self.lib.close_connection(self.source_id)
+        if self.lib is not None:
+            self.lib.close_connection(self.source_id)

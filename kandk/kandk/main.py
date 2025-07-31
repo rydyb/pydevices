@@ -35,11 +35,13 @@ def get_argparser():
 def main():
     args = get_argparser().parse_args()
 
-    try:
-        fc = FrequencyCounter(
+    fc = FrequencyCounter(
             connection=args.host,
-            channels=args.channels
-        )
+     channels=args.channels
+    )
+
+    try:
+        fc.open()
 
         if args.command == "stream":
             while True:
