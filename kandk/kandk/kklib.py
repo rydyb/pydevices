@@ -83,6 +83,7 @@ __all__ = ['NativeLib', 'NativeLibError', 'ErrorCode', 'KK_Result', 'DebugLogTyp
            'KK_ReportType', 'KK_Report', 'Phase']
 __version__ = '2.1'
 
+import os
 import ctypes
 from ctypes import c_bool, c_byte, c_char, c_char_p, c_double, c_int32, c_int64, \
     c_uint, c_uint16, c_uint32, \
