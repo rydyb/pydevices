@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "kandk"
 version = "21.1.0"
@@ -6,8 +10,14 @@ authors = [
 ]
 dependencies = ["sipyco @ git+https://github.com/m-labs/sipyco.git@v1.9"]
 
+[project.scripts]
+kandk = "kandk:main"
+
 [tool.setuptools]
 include-package-data = true
 
+[tool.setuptools.packages.find]
+where = ["kandk"]
+
 [tool.setuptools.package-data]
-libkk = ["*.dll", "*.so", "kandk/*.dll", "kandk/*.so"]
+libkk = ["*.dll", "*.so"]
