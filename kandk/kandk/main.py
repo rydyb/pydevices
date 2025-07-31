@@ -1,5 +1,4 @@
 import argparse
-import logging
 from sipyco.pc_rpc import simple_server_loop
 from sipyco import common_args
 from .driver import FrequencyCounter
@@ -36,9 +35,6 @@ def get_argparser():
 def main():
     args = get_argparser().parse_args()
 
-    level = logging.DEBUG if args.debug else logging.WARNING
-    logging.basicConfig(level=level, format="%(asctime)s %(levelname)s: %(message)s")
-
     try:
         fc = FrequencyCounter(
             connection=args.host,
@@ -47,7 +43,9 @@ def main():
 
         if args.command == "stream":
             while True:
-                print(fc.report())
+                freqs = fc.report()
+                if freqs is not None:
+                    print(", ".join(f"{f:.6f}" for f in freqs))
 
         if args.command == "sipyco":
             common_args.init_logger_from_args(args)

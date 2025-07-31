@@ -93,7 +93,6 @@ import math
 import platform
 import struct
 import sys
-from typing import Self
 
 
 #-------------------------------------------------------------------------
@@ -482,7 +481,7 @@ class Phase:
         self.Low = aLow
 
     @classmethod
-    def from_float(cls, aFloat: float) -> Self:
+    def from_float(cls, aFloat: float):
         aHigh = math.trunc(aFloat)
         aLow = aFloat - aHigh
         return cls(aHigh, aLow)

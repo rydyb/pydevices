@@ -16,13 +16,14 @@ class TestFrequencyCounter(unittest.TestCase):
         pass
 
     def test_report(self):
-        freqs = self.fc.report()
-        self.assertIsNotNone(freqs)
-        self.assertEqual(len(freqs), 8)
-        self.assertTrue(
+        for i in range(10):
+            freqs = self.fc.report()
+            self.assertIsNotNone(freqs)
+            self.assertEqual(len(freqs), 8)
+            self.assertTrue(
                     all(x > 0 for x in freqs),
                     f"Found non‐positive elements in {freqs}"
-                )
+            )
 
 
 if __name__ == "__main__":
