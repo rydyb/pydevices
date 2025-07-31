@@ -1,0 +1,29 @@
+import unittest
+import kandk
+
+class TestFrequencyCounter(unittest.TestCase):
+
+    def setUp(self):
+        self.fc = kandk.FrequencyCounter("10.163.100.48", channels=8)
+
+    def tearDown(self):
+        try:
+            self.fc.close()
+        except Exception:
+            pass
+
+    def test_initialization(self):
+        pass
+
+    def test_report(self):
+        freqs = self.fc.report()
+        self.assertIsNotNone(freqs)
+        self.assertEqual(len(freqs), 8)
+        self.assertTrue(
+                    all(x > 0 for x in freqs),
+                    f"Found non‐positive elements in {freqs}"
+                )
+
+
+if __name__ == "__main__":
+    unittest.main()

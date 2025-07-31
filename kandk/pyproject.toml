@@ -1,0 +1,9 @@
+[project]
+name = "kandk"
+version = "21.1.0"
+authors = [
+    { name = "Bodo Kaiser", email = "bodo.kaiser@physik.uni-muenchen.de" }
+]
+dependencies = [
+    "sipyco @ git+https://github.com/m-labs/sipyco.git@v1.9"
+]
