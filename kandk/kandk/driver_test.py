@@ -5,6 +5,7 @@ class TestFrequencyCounter(unittest.TestCase):
 
     def setUp(self):
         self.fc = kandk.FrequencyCounter("10.163.100.48", channels=8)
+        self.fc.open()
 
     def tearDown(self):
         try:
@@ -13,7 +14,7 @@ class TestFrequencyCounter(unittest.TestCase):
             pass
 
     def test_open(self):
-        self.fc.open()
+        pass
 
     def test_report(self):
         for i in range(10):
