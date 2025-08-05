@@ -30,9 +30,9 @@ class FrequencyCounter:
             raise RuntimeError(f"Error opening connection: {result.data}")
 
         logging.debug("configuring device for data stream")
-        self._lib.send_command(self.source_id, CMD_FREQ_AVG)
-        self._lib.send_command(self.source_id, CMD_RATE_1S)
-        self._lib.send_command(self.source_id, str(self.channels).encode('ascii'))
+        self._lib.send_command(self._sid, CMD_FREQ_AVG)
+        self._lib.send_command(self._sid, CMD_RATE_1S)
+        self._lib.send_command(self._sid, str(self.channels).encode('ascii'))
 
     def report(self) -> list[float]:
         if self._sid is None:
