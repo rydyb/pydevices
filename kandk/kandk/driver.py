@@ -41,7 +41,7 @@ class FrequencyCounter:
         deadline = time.monotonic() + self.timeout
 
         while time.monotonic() < deadline:
-            report = self.lib.get_kk_report(self._sid)
+            report = self._lib.get_kk_report(self._sid)
             if report.get_report_type() == KK_ReportType.RT_DOUBLE:
                 return report._floats
             time.sleep(self.interval)
