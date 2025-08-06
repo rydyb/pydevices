@@ -1,0 +1,21 @@
+[build-system]
+requires = ['hatchling']
+build-backend = 'hatchling.build'
+
+
+[project]
+name = "highfinesse"
+version = "0.1.0"
+authors = [
+    { name = "Bodo Kaiser", email = "bodo.kaiser@physik.uni-muenchen.de" },
+]
+dependencies = ["sipyco @ git+https://github.com/m-labs/sipyco.git@v1.9"]
+
+[project.scripts]
+highfinesse = "highfinesse:main"
+
+[tool.hatch.build]
+include = ["*.py", "*.so"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
