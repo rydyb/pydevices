@@ -4,7 +4,7 @@ import kandk
 class TestFrequencyCounter(unittest.TestCase):
 
     def setUp(self):
-        self.fc = kandk.FrequencyCounter("10.163.100.48", channels=8)
+        self.fc = kandk.FrequencyCounter(device_host="10.163.100.48", channels=8)
         self.fc.open()
 
     def tearDown(self):
