@@ -1,50 +1,8 @@
 import os
+from blinker import Signal
 import configparser
 from . import wlmData
 from . import wlmConst
-
-
-def handle(callback):
-    @wlmData.CALLBACK_TYPE
-    def handle(mode, _intval, dblval):
-        if mode == wlmConst.cmiPressure:
-            callback({"quantity": "pressure", "value": dblval, "unit": "mbar"})
-        elif mode == wlmConst.cmiTemperature:
-            callback({"quantity": "temperature", "value": dblval, "unit": "celsius"})
-        elif mode == wlmConst.cmiWavelength1:
-            callback(
-                {"quantity": "wavelength", "channel": 1, "value": dblval, "unit": "nm"}
-            )
-        elif mode == wlmConst.cmiWavelength2:
-            callback(
-                {"quantity": "wavelength", "channel": 2, "value": dblval, "unit": "nm"}
-            )
-        elif mode == wlmConst.cmiWavelength3:
-            callback(
-                {"quantity": "wavelength", "channel": 3, "value": dblval, "unit": "nm"}
-            )
-        elif mode == wlmConst.cmiWavelength4:
-            callback(
-                {"quantity": "wavelength", "channel": 4, "value": dblval, "unit": "nm"}
-            )
-        elif mode == wlmConst.cmiWavelength5:
-            callback(
-                {"quantity": "wavelength", "channel": 5, "value": dblval, "unit": "nm"}
-            )
-        elif mode == wlmConst.cmiWavelength6:
-            callback(
-                {"quantity": "wavelength", "channel": 6, "value": dblval, "unit": "nm"}
-            )
-        elif mode == wlmConst.cmiWavelength7:
-            callback(
-                {"quantity": "wavelength", "channel": 7, "value": dblval, "unit": "nm"}
-            )
-        elif mode == wlmConst.cmiWavelength8:
-            callback(
-                {"quantity": "wavelength", "channel": 8, "value": dblval, "unit": "nm"}
-            )
-
-    return handle
 
 
 def write_ini(filename: str, settings: dict):
@@ -56,6 +14,30 @@ def write_ini(filename: str, settings: dict):
         cfg.write(f)
 
 
+def map_wlm_modes(mode, value):
+    if mode == wlmConst.cmiPressure:
+        return {"quantity": "pressure", "value": value, "unit": "mbar"}
+    elif mode == wlmConst.cmiTemperature:
+        return {"quantity": "temperature", "value": value, "unit": "celsius"}
+    elif mode == wlmConst.cmiWavelength1:
+        return {"quantity": "wavelength", "channel": 1, "value": value, "unit": "nm"}
+    elif mode == wlmConst.cmiWavelength2:
+        return {"quantity": "wavelength", "channel": 2, "value": value, "unit": "nm"}
+    elif mode == wlmConst.cmiWavelength3:
+        return {"quantity": "wavelength", "channel": 3, "value": value, "unit": "nm"}
+    elif mode == wlmConst.cmiWavelength4:
+        return {"quantity": "wavelength", "channel": 4, "value": value, "unit": "nm"}
+    elif mode == wlmConst.cmiWavelength5:
+        return {"quantity": "wavelength", "channel": 5, "value": value, "unit": "nm"}
+    elif mode == wlmConst.cmiWavelength6:
+        return {"quantity": "wavelength", "channel": 6, "value": value, "unit": "nm"}
+    elif mode == wlmConst.cmiWavelength7:
+        return {"quantity": "wavelength", "channel": 7, "value": value, "unit": "nm"}
+    elif mode == wlmConst.cmiWavelength8:
+        return {"quantity": "wavelength", "channel": 8, "value": value, "unit": "nm"}
+    return None
+
+
 class Wavemeter:
     def __init__(
         self, address: str, control_port: int = 7171, callback_port: int = 7172
@@ -64,6 +46,8 @@ class Wavemeter:
         self.control_port = control_port
         self.callback_port = callback_port
         self._dll = None
+        self._data = Signal()
+        self._handle = None
 
     def open(self):
         write_ini(
@@ -122,19 +106,39 @@ class Wavemeter:
             raise RuntimeError("Wavemeter not open")
         return self._dll.GetExposure(int(channel))
 
-    def listen(self, callback, priority: int = 2):
+    def listen(self, priority: int = 2):
         if self._dll is None:
             raise RuntimeError("Wavemeter not open")
+        if self._handle is not None:
+            raise RuntimeError("Already listening for callbacks")
+
+        @wlmData.CALLBACK_TYPE
+        def handle(mode, intval, dblval):
+            event = map_wlm_modes(mode, dblval)
+            if event is not None:
+                self._data.send(event)
+
+        self._handle = wlmData.CALLBACK_TYPE(handle)
+
         self._dll.Instantiate(
             wlmConst.cInstNotification,
             wlmConst.cNotifyInstallCallback,
-            handle(callback),
+            self._handle,
             priority,
         )
 
     def unlisten(self):
         if self._dll is None:
             raise RuntimeError("Wavemeter not open")
+        if self._handle is None:
+            raise RuntimeError("Not currently listening for callbacks")
         self._dll.Instantiate(
             wlmConst.cInstNotification, wlmConst.cNotifyRemoveCallback, None, 0
         )
+        self._handle = None
+
+    def subscribe(self, callback):
+        self._data.connect(callback)
+
+    def unsubscribe(self, callback):
+        self._data.disconnect(callback)

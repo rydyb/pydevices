@@ -50,10 +50,13 @@ class TestWavemeterHardware(unittest.TestCase):
         def callback(param):
             nonlocal callback_called
             callback_called = True
+            print("callback called with:", param)
 
-        self.wlm.listen(callback)
+        self.wlm.listen()
+        self.wlm.subscribe(callback)
         time.sleep(1)
         self.wlm.unlisten()
+        self.wlm.unsubscribe(callback)
         self.assertTrue(callback_called)
 
 
